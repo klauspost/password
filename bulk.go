@@ -2,6 +2,8 @@ package password
 
 import ()
 
+// If your DbWriter implements this, input will be sent
+// in batches instead of using Add.
 type BulkWriter interface {
 	AddMultiple([]string) error
 }
@@ -13,9 +15,11 @@ type bulkWrapper struct {
 	buf []string
 }
 
+// BulkMax is the maximum number of passwords sent at once to the writer.
+// Out can change this before starting an import.
 var BulkMax = 1000
 
-func BulkWrap(out BulkWriter) Writer {
+func BulkWrap(out BulkWriter) DbWriter {
 	b := &bulkWrapper{
 		out: out,
 		res: make(chan error, 1),
@@ -63,3 +67,8 @@ func (b *bulkWrapper) Close() error {
 	close(b.in)
 	return <-b.res
 }
+
+// TestDatabase a database implementation
+//func TestDatabase(t *testing.T, db interface{}) {
+
+//}

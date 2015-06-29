@@ -11,7 +11,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-type Writer interface {
+// A DbWriter allows
+type DbWriter interface {
 	Add(string) error
 }
 
@@ -19,10 +20,16 @@ type DB interface {
 	Has(string) (bool, error)
 }
 
+// A Sanitizer should prepare a password, and check
+// the basic properties that should be satisfied.
+// For examples, see DefaultSanitizer and CheckSanitizer
 type Sanitizer interface {
 	Sanitize(string) (string, error)
 }
 
+// Tokenizer delivers input tokens (passwords).
+// Calling Next() should return the next password, and when
+// finished io.EOF should be returned.
 type Tokenizer interface {
 	Next() (string, error)
 }
@@ -66,6 +73,7 @@ var ErrSanitizeTooShort = errors.New("password too short")
 // database.
 var ErrPasswordInDB = errors.New("password found in database")
 
+// doc at DefaultSanitizer
 type defaultSanitizer struct {
 	checkSanitizer
 }
@@ -76,6 +84,7 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 	return in, err
 }
 
+// doc at CheckSanitizer
 type checkSanitizer struct{}
 
 func (c checkSanitizer) Sanitize(in string) (string, error) {
@@ -90,7 +99,7 @@ func (c checkSanitizer) Sanitize(in string) (string, error) {
 // This will populate the known password list with common passwords
 // It is a simple line-reader reading one password per line.
 // Similar to format at https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm
-func Import(in Tokenizer, out Writer, san Sanitizer) error {
+func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
 
 	bulk, ok := out.(BulkWriter)
 	if ok {
@@ -146,9 +155,9 @@ func Import(in Tokenizer, out Writer, san Sanitizer) error {
 
 // Check a password.
 // It will return an error if:
-// * Sanitazition fails.
-// * DB lookup returns an error
-// * Password is in database (ErrPasswordInDB)
+//  - Sanitazition fails.
+//  - DB lookup returns an error
+//  - Password is in database (ErrPasswordInDB)
 // If nil is passed as Sanitizer, DefaultSanitizer will be used.
 func Check(password string, db DB, san Sanitizer) error {
 	if san == nil {

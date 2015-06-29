@@ -2,7 +2,10 @@ package password
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/klauspost/password/drivers/testdb"
@@ -28,8 +31,21 @@ func TestImportBig(t *testing.T) {
 	if err != nil {
 		t.Skip("Skipping big file test. 'crackstation-human-only.txt.gz' must be in current dir")
 	}
-	mem := testdb.NewMemDB()
+	mem := testdb.NewMemDBBulk()
 	in, err := line.New(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = Import(in, mem, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestImportBulk(t *testing.T) {
+	buf := testdata.MustAsset("testdata.txt.gz")
+	mem := testdb.NewMemDBBulk()
+	in, err := line.New(bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,4 +116,63 @@ func TestDefaultSanitizer(t *testing.T) {
 			t.Fatalf("Sanitized error difference. Expected `%s`, got `%s`", expect.E, e)
 		}
 	}
+}
+
+type CustomSanitizer struct {
+	email    string
+	username string
+}
+
+func (c CustomSanitizer) Sanitize(s string) (string, error) {
+	s, err := DefaultSanitizer.Sanitize(s)
+	if err != nil {
+		return "", err
+	}
+	if strings.EqualFold(s, c.email) {
+		return "", errors.New("password cannot be the same as email")
+	}
+	if strings.EqualFold(s, c.username) {
+		return "", errors.New("password cannot be the same as user name")
+	}
+	return s, nil
+}
+
+// This example shows how to create a custom sanitizer that checks if
+// the password matches the username or email.
+//
+// CustomSanitizer is defined as:
+//  type CustomSanitizer struct {
+//      email string
+//      username string
+//  }
+//
+//  func (c CustomSanitizer) Sanitize(s string) (string, error) {
+//      s, err := DefaultSanitizer.Sanitize(s)
+//      if err != nil {
+//          return "", err
+//      }
+//      if strings.EqualFold(s, c.email) {
+//          return "", errors.New("password cannot be the same as email")
+//      }
+//      if strings.EqualFold(s, c.username) {
+//          return "", errors.New("password cannot be the same as user name")
+//      }
+//      return s, nil
+//  }
+func ExampleSanitizer() {
+	// Create a custom sanitizer.
+	san := CustomSanitizer{email: "john@doe.com", username: "johndoe73"}
+
+	// Check some passwords
+	err := SanitizeOK("john@doe.com", san)
+	fmt.Println(err)
+
+	err = SanitizeOK("JohnDoe73", san)
+	fmt.Println(err)
+
+	err = SanitizeOK("MyP/|$$W0rd", san)
+	fmt.Println(err)
+	// Output: password cannot be the same as email
+	// password cannot be the same as user name
+	// <nil>
 }
