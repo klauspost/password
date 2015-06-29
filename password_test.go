@@ -14,7 +14,10 @@ import (
 )
 
 func TestImport(t *testing.T) {
-	buf := testdata.MustAsset("testdata.txt.gz")
+	buf, err := testdata.Asset("testdata.txt.gz")
+	if err != nil {
+		t.Fatal(err)
+	}
 	mem := testdb.NewMemDB()
 	in, err := line.New(bytes.NewBuffer(buf))
 	if err != nil {
@@ -43,7 +46,10 @@ func TestImportBig(t *testing.T) {
 }
 
 func TestImportBulk(t *testing.T) {
-	buf := testdata.MustAsset("testdata.txt.gz")
+	buf, err := testdata.Asset("testdata.txt.gz")
+	if err != nil {
+		t.Fatal(err)
+	}
 	mem := testdb.NewMemDBBulk()
 	in, err := line.New(bytes.NewBuffer(buf))
 	if err != nil {
@@ -56,7 +62,10 @@ func TestImportBulk(t *testing.T) {
 }
 
 func TestInDB(t *testing.T) {
-	buf := testdata.MustAsset("testdata.txt.gz")
+	buf, err := testdata.Asset("testdata.txt.gz")
+	if err != nil {
+		t.Fatal(err)
+	}
 	mem := testdb.NewMemDB()
 	in, err := line.New(bytes.NewBuffer(buf))
 	if err != nil {
