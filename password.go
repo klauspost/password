@@ -1,6 +1,7 @@
 package password
 
 import (
+	"errors"
 	"io"
 	"log"
 	"strings"
@@ -19,30 +20,71 @@ type DB interface {
 }
 
 type Sanitizer interface {
-	Sanitize(string) string
+	Sanitize(string) (string, error)
 }
 
 type Tokenizer interface {
 	Next() (string, error)
 }
 
-type DefaultSanitizer struct{}
+// DefaultSanitizer should be used for adding passwords
+// to the database.
+// Assumes input is UTF8.
+//
+// DefaultSanitizer performs the following sanitazion:
+//
+//  - Trim space, tab and newlines from start+end of input
+//  - Check that there is at least 8 runes (returns ErrSanitizeTooShort if not).
+//  - Normalize input using Unicode Normalization Form KD
+//  - Convert to unicode lower case.
+//
+// If input is less than 8 runes ErrSanitizeTooShort is returned.
+var DefaultSanitizer Sanitizer
 
-// Sanitize performs the following sanitation:
-// * Trim space, tab and newlines from start+end of input
-// * Check that there is at least 8 runes.
-// * Normalize input using Unicode Normalization Form KD
-// * Convert to unicode lower case.
-// If input is less than 8 characters an empty string is returned.
-func (d DefaultSanitizer) Sanitize(in string) string {
-	in = strings.Trim(in, "\r\n \t")
-	if utf8.RuneCountInString(in) < 8 {
-		return ""
-	}
-	// Normalize using Unicode Normalization Form KD
-	in = norm.NFKD.String(in)
+// CheckSanitizer should be used to sanitize a password
+// before hasing. Performs the same operations as DefaultSanitizer
+// except it doesn't convert the password to lower case.
+// Assumes input is UTF8.
+//
+// CheckSanitizer performs the following sanitazion:
+//
+//  - Trim space, tab and newlines from start+end of input
+//  - Check that there is at least 8 runes (returns ErrSanitizeTooShort if not).
+//  - Normalize input using Unicode Normalization Form KD
+var CheckSanitizer Sanitizer
+
+func init() {
+	CheckSanitizer = &checkSanitizer{}
+	DefaultSanitizer = &defaultSanitizer{}
+}
+
+// ErrSanitizeTooShort is returned by the default sanitizer,
+// if the input password is less than 8 runes.
+var ErrSanitizeTooShort = errors.New("password too short")
+
+// ErrPasswordInDB is returedn by Check, if the password is in the
+// database.
+var ErrPasswordInDB = errors.New("password found in database")
+
+type defaultSanitizer struct {
+	checkSanitizer
+}
+
+func (d defaultSanitizer) Sanitize(in string) (string, error) {
+	in, err := d.checkSanitizer.Sanitize(in)
 	in = strings.ToLower(in)
-	return in
+	return in, err
+}
+
+type checkSanitizer struct{}
+
+func (c checkSanitizer) Sanitize(in string) (string, error) {
+	in = strings.TrimSpace(in)
+	if utf8.RuneCountInString(in) < 8 {
+		return "", ErrSanitizeTooShort
+	}
+	in = norm.NFKD.String(in)
+	return in, nil
 }
 
 // This will populate the known password list with common passwords
@@ -67,7 +109,7 @@ func Import(in Tokenizer, out Writer, san Sanitizer) error {
 	}
 
 	if san == nil {
-		san = DefaultSanitizer{}
+		san = DefaultSanitizer
 	}
 
 	start := time.Now()
@@ -82,8 +124,8 @@ func Import(in Tokenizer, out Writer, san Sanitizer) error {
 			return err
 		}
 
-		valstring := san.Sanitize(record)
-		if len(valstring) > 0 {
+		valstring, err := san.Sanitize(record)
+		if err == nil {
 			err = out.Add(valstring)
 			if err != nil {
 				return err
@@ -102,13 +144,45 @@ func Import(in Tokenizer, out Writer, san Sanitizer) error {
 	return nil
 }
 
-func InDB(password string, db DB, san Sanitizer) (bool, error) {
+// Check a password.
+// It will return an error if:
+// * Sanitazition fails.
+// * DB lookup returns an error
+// * Password is in database (ErrPasswordInDB)
+// If nil is passed as Sanitizer, DefaultSanitizer will be used.
+func Check(password string, db DB, san Sanitizer) error {
 	if san == nil {
-		san = DefaultSanitizer{}
+		san = DefaultSanitizer
 	}
-	p := san.Sanitize(password)
-	if p == "" {
+	p, err := san.Sanitize(password)
+	if err != nil {
+		return err
+	}
+	has, err := db.Has(p)
+	if err != nil {
+		return err
+	}
+	if has {
+		return ErrPasswordInDB
+	}
+	return nil
+}
+
+func inDB(password string, db DB, san Sanitizer) (bool, error) {
+	if san == nil {
+		san = DefaultSanitizer
+	}
+	p, err := san.Sanitize(password)
+	if err != nil {
 		return false, nil
 	}
 	return db.Has(p)
+}
+
+func SanitizeOK(password string, san Sanitizer) error {
+	if san == nil {
+		san = DefaultSanitizer
+	}
+	_, err := san.Sanitize(password)
+	return err
 }
