@@ -1,3 +1,6 @@
+// Intelligent Password Checking for Go
+//
+// Package home: https://github.com/klauspost/password
 package password
 
 import (
@@ -188,6 +191,8 @@ func inDB(password string, db DB, san Sanitizer) (bool, error) {
 	return db.Has(p)
 }
 
+// Check if a password passes a sanitizer.
+// If the sanitizer is nil, DefaultSanitizer will be used.
 func SanitizeOK(password string, san Sanitizer) error {
 	if san == nil {
 		san = DefaultSanitizer
