@@ -2,8 +2,8 @@ package drivers
 
 import (
 	"github.com/klauspost/password"
-	"github.com/klauspost/password/readers/line"
 	"github.com/klauspost/password/testdata"
+	"github.com/klauspost/password/tokenizer"
 
 	"bytes"
 	"fmt"
@@ -20,7 +20,7 @@ func TestDriver(db TestDB) error {
 	if err != nil {
 		return err
 	}
-	in, err := line.New(bytes.NewBuffer(buf))
+	in, err := tokenizer.NewGzLine(bytes.NewBuffer(buf))
 	if err != nil {
 		return err
 	}

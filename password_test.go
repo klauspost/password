@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/klauspost/password/drivers/testdb"
-	"github.com/klauspost/password/readers/line"
 	"github.com/klauspost/password/testdata"
+	"github.com/klauspost/password/tokenizer"
 )
 
 func TestImport(t *testing.T) {
@@ -19,7 +19,7 @@ func TestImport(t *testing.T) {
 		t.Fatal(err)
 	}
 	mem := testdb.NewMemDB()
-	in, err := line.New(bytes.NewBuffer(buf))
+	in, err := tokenizer.NewGzLine(bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func TestImportBig(t *testing.T) {
 		t.Skip("Skipping big file test. 'crackstation-human-only.txt.gz' must be in current dir")
 	}
 	mem := testdb.NewMemDBBulk()
-	in, err := line.New(r)
+	in, err := tokenizer.NewGzLine(r)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestImportBulk(t *testing.T) {
 		t.Fatal(err)
 	}
 	mem := testdb.NewMemDBBulk()
-	in, err := line.New(bytes.NewBuffer(buf))
+	in, err := tokenizer.NewGzLine(bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func TestInDB(t *testing.T) {
 		t.Fatal(err)
 	}
 	mem := testdb.NewMemDB()
-	in, err := line.New(bytes.NewBuffer(buf))
+	in, err := tokenizer.NewGzLine(bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +112,7 @@ func TestInDBBulk(t *testing.T) {
 		t.Fatal(err)
 	}
 	mem := testdb.NewMemDBBulk()
-	in, err := line.New(bytes.NewBuffer(buf))
+	in, err := tokenizer.NewGzLine(bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatal(err)
 	}

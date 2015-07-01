@@ -1,4 +1,4 @@
-package line
+package tokenizer
 
 import (
 	"bufio"
@@ -7,14 +7,14 @@ import (
 	gzip "github.com/klauspost/pgzip"
 )
 
-type Reader struct {
+type GzLineReader struct {
 	in io.Reader
 	gr *gzip.Reader
 	br *bufio.Reader
 }
 
-func New(in io.Reader) (*Reader, error) {
-	l := &Reader{in: in}
+func NewGzLine(in io.Reader) (*GzLineReader, error) {
+	l := &GzLineReader{in: in}
 	var err error
 	l.gr, err = gzip.NewReader(in)
 	if err != nil {
@@ -24,7 +24,7 @@ func New(in io.Reader) (*Reader, error) {
 	return l, nil
 }
 
-func (l *Reader) Next() (string, error) {
+func (l *GzLineReader) Next() (string, error) {
 	record, err := l.br.ReadBytes(10)
 	if err != nil {
 		return "", err
@@ -32,6 +32,6 @@ func (l *Reader) Next() (string, error) {
 	return string(record), nil
 }
 
-func (l *Reader) Close() error {
+func (l *GzLineReader) Close() error {
 	return l.gr.Close()
 }
