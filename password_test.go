@@ -108,8 +108,17 @@ func TestInDB(t *testing.T) {
 
 func TestDefaultSanitizer(t *testing.T) {
 	san := DefaultSanitizer
+	all := map[string]testdata.PassErr{}
 	for p := range testdata.TestSet {
 		s, err := san.Sanitize(p)
+		if true {
+			pw := testdata.PassErr{S: s}
+			if err != nil {
+				pw.E = err.Error()
+			}
+			all[p] = pw
+			continue
+		}
 		expect, ok := testdata.SanitizeExpect[p]
 		if !ok {
 			t.Fatalf("Sanitized version of `%s` not defined.", p)
@@ -125,6 +134,7 @@ func TestDefaultSanitizer(t *testing.T) {
 			t.Fatalf("Sanitized error difference. Expected `%s`, got `%s`", expect.E, e)
 		}
 	}
+	//t.Logf("var SanitizeExpect = %#v", all)
 }
 
 type CustomSanitizer struct {

@@ -46,25 +46,11 @@ type Tokenizer interface {
 //  - Trim space, tab and newlines from start+end of input
 //  - Check that there is at least 8 runes (returns ErrSanitizeTooShort if not).
 //  - Normalize input using Unicode Normalization Form KD
-//  - Convert to unicode lower case.
 //
 // If input is less than 8 runes ErrSanitizeTooShort is returned.
 var DefaultSanitizer Sanitizer
 
-// CheckSanitizer should be used to sanitize a password
-// before hasing. Performs the same operations as DefaultSanitizer
-// except it doesn't convert the password to lower case.
-// Assumes input is UTF8.
-//
-// CheckSanitizer performs the following sanitazion:
-//
-//  - Trim space, tab and newlines from start+end of input
-//  - Check that there is at least 8 runes (returns ErrSanitizeTooShort if not).
-//  - Normalize input using Unicode Normalization Form KD
-var CheckSanitizer Sanitizer
-
 func init() {
-	CheckSanitizer = &checkSanitizer{}
 	DefaultSanitizer = &defaultSanitizer{}
 }
 
@@ -77,20 +63,10 @@ var ErrSanitizeTooShort = errors.New("password too short")
 var ErrPasswordInDB = errors.New("password found in database")
 
 // doc at DefaultSanitizer
-type defaultSanitizer struct {
-	checkSanitizer
-}
+type defaultSanitizer struct{}
 
+// doc at DefaultSanitizer
 func (d defaultSanitizer) Sanitize(in string) (string, error) {
-	in, err := d.checkSanitizer.Sanitize(in)
-	in = strings.ToLower(in)
-	return in, err
-}
-
-// doc at CheckSanitizer
-type checkSanitizer struct{}
-
-func (c checkSanitizer) Sanitize(in string) (string, error) {
 	in = strings.TrimSpace(in)
 	if utf8.RuneCountInString(in) < 8 {
 		return "", ErrSanitizeTooShort
@@ -138,6 +114,7 @@ func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
 
 		valstring, err := san.Sanitize(record)
 		if err == nil {
+			valstring = strings.ToLower(valstring)
 			err = out.Add(valstring)
 			if err != nil {
 				return err
@@ -170,6 +147,7 @@ func Check(password string, db DB, san Sanitizer) error {
 	if err != nil {
 		return err
 	}
+	p = strings.ToLower(p)
 	has, err := db.Has(p)
 	if err != nil {
 		return err
@@ -188,6 +166,7 @@ func inDB(password string, db DB, san Sanitizer) (bool, error) {
 	if err != nil {
 		return false, nil
 	}
+	p = strings.ToLower(p)
 	return db.Has(p)
 }
 
