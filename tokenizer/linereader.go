@@ -1,3 +1,5 @@
+// Tokenizers for various formats,
+// that satisfies the password.Tokenizer interface.
 package tokenizer
 
 import (
@@ -7,14 +9,27 @@ import (
 	gzip "github.com/klauspost/pgzip"
 )
 
-type GzLineReader struct {
+type LineReader struct {
 	in io.Reader
 	gr *gzip.Reader
 	br *bufio.Reader
 }
 
-func NewGzLine(in io.Reader) (*GzLineReader, error) {
-	l := &GzLineReader{in: in}
+// NewLine reads one password per line until
+// \0xa (newline) is encountered.
+// Input is streamed.
+func NewLine(in io.Reader) (*LineReader, error) {
+	l := &LineReader{in: in}
+	l.br = bufio.NewReader(in)
+	return l, nil
+}
+
+// NewGzLine reads one password per line until
+// \0xa (newline) is encountered.
+// The input is assumed to be gzip compressed.
+// Input is streamed.
+func NewGzLine(in io.Reader) (*LineReader, error) {
+	l := &LineReader{in: in}
 	var err error
 	l.gr, err = gzip.NewReader(in)
 	if err != nil {
@@ -24,7 +39,7 @@ func NewGzLine(in io.Reader) (*GzLineReader, error) {
 	return l, nil
 }
 
-func (l *GzLineReader) Next() (string, error) {
+func (l *LineReader) Next() (string, error) {
 	record, err := l.br.ReadBytes(10)
 	if err != nil {
 		return "", err
@@ -32,6 +47,9 @@ func (l *GzLineReader) Next() (string, error) {
 	return string(record), nil
 }
 
-func (l *GzLineReader) Close() error {
-	return l.gr.Close()
+func (l *LineReader) Close() error {
+	if l.gr != nil {
+		return l.gr.Close()
+	}
+	return nil
 }
