@@ -106,6 +106,51 @@ func TestInDB(t *testing.T) {
 	}
 }
 
+func TestInDBBulk(t *testing.T) {
+	buf, err := testdata.Asset("testdata.txt.gz")
+	if err != nil {
+		t.Fatal(err)
+	}
+	mem := testdb.NewMemDBBulk()
+	in, err := line.New(bytes.NewBuffer(buf))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = Import(in, mem, nil)
+	for p := range testdata.TestSet {
+		if SanitizeOK(p, nil) != nil {
+			continue
+		}
+		has, err := inDB(p, mem, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !has {
+			t.Fatalf("db should have: %s", p)
+		}
+		err = Check(p, mem, nil)
+		if err != ErrPasswordInDB {
+			t.Fatal("check failed on:", p, err)
+		}
+	}
+	for p := range testdata.NotInSet {
+		if SanitizeOK(p, nil) != nil {
+			continue
+		}
+		has, err := inDB(p, mem, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if has {
+			t.Fatalf("db should not have: %s", p)
+		}
+		err = Check(p, mem, nil)
+		if err != nil {
+			t.Fatal("check failed on:", p, err)
+		}
+	}
+}
+
 func TestDefaultSanitizer(t *testing.T) {
 	san := DefaultSanitizer
 	all := map[string]testdata.PassErr{}

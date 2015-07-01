@@ -64,6 +64,14 @@ func (b *bulkWrapper) Add(s string) error {
 }
 
 func (b *bulkWrapper) Close() error {
+	if len(b.buf) > 0 {
+		last := <-b.res
+		if last != nil {
+			return last
+		}
+		// Send next
+		b.in <- b.buf
+	}
 	close(b.in)
 	return <-b.res
 }
