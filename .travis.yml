@@ -8,4 +8,6 @@ go:
 script: 
  - go test -v -cpu=1,2,4 .
  - go test -v -cpu=1,2,4 -race .
+ - go test -v -cpu=2 ./drivers/boltpw
+ - go test -v -cpu=2 ./drivers/testdb
  - diff <(gofmt -d .) <("")
