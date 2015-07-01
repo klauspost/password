@@ -1,4 +1,4 @@
-package pwbolt
+package boltpw
 
 import (
 	"github.com/boltdb/bolt"
