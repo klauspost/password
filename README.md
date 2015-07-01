@@ -8,4 +8,7 @@
 
 Password Validation for Go
 
+Motivated by [Password Requirements Done Better](http://blog.klauspost.com/password-requirements-done-better/).
+
 Currently in development...
+
