@@ -87,7 +87,7 @@ func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
 			// TODO: Check error
 			defer closer.Close()
 		}
-		out = BulkWrap(bulk)
+		out = bulkWrap(bulk)
 	}
 
 	closer, ok := out.(io.Closer)

@@ -19,7 +19,7 @@ type bulkWrapper struct {
 // Out can change this before starting an import.
 var BulkMax = 1000
 
-func BulkWrap(out BulkWriter) DbWriter {
+func bulkWrap(out BulkWriter) DbWriter {
 	b := &bulkWrapper{
 		out: out,
 		res: make(chan error, 1),
