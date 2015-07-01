@@ -13,6 +13,19 @@ import (
 	"github.com/klauspost/password/tokenizer"
 )
 
+// inDB will return information if a password is in the database
+func inDB(password string, db DB, san Sanitizer) (bool, error) {
+	if san == nil {
+		san = DefaultSanitizer
+	}
+	p, err := san.Sanitize(password)
+	if err != nil {
+		return false, nil
+	}
+	p = strings.ToLower(p)
+	return db.Has(p)
+}
+
 func TestImport(t *testing.T) {
 	buf, err := testdata.Asset("testdata.txt.gz")
 	if err != nil {

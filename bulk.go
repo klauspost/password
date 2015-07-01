@@ -16,7 +16,7 @@ type bulkWrapper struct {
 }
 
 // BulkMax is the maximum number of passwords sent at once to the writer.
-// Out can change this before starting an import.
+// You can change this before starting an import.
 var BulkMax = 1000
 
 func bulkWrap(out BulkWriter) DbWriter {
@@ -75,8 +75,3 @@ func (b *bulkWrapper) Close() error {
 	close(b.in)
 	return <-b.res
 }
-
-// TestDatabase a database implementation
-//func TestDatabase(t *testing.T, db interface{}) {
-
-//}

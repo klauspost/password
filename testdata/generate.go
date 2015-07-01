@@ -1,3 +1,5 @@
+// Test data to use for testing.
+//
 // Requires https://github.com/jteeuwen/go-bindata
 //
 // Install with go get -u github.com/jteeuwen/go-bindata/...

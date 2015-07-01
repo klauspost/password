@@ -14,18 +14,22 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// A DbWriter allows
+// A DbWriter is used for adding passwords to a database.
+// Items sent to Add has always been sanitized, however
+// the same passwords can be sent multiple times.
 type DbWriter interface {
 	Add(string) error
 }
 
+// A DB should check the database for the supplied password.
+// The password sent to the interface has always been sanitized.
 type DB interface {
 	Has(string) (bool, error)
 }
 
 // A Sanitizer should prepare a password, and check
 // the basic properties that should be satisfied.
-// For examples, see DefaultSanitizer and CheckSanitizer
+// For an example, see DefaultSanitizer
 type Sanitizer interface {
 	Sanitize(string) (string, error)
 }
@@ -33,6 +37,9 @@ type Sanitizer interface {
 // Tokenizer delivers input tokens (passwords).
 // Calling Next() should return the next password, and when
 // finished io.EOF should be returned.
+//
+// It is ok for the Tokenizer to send empty strings and duplicate
+// values.
 type Tokenizer interface {
 	Next() (string, error)
 }
@@ -75,9 +82,13 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 	return in, nil
 }
 
-// This will populate the known password list with common passwords
-// It is a simple line-reader reading one password per line.
-// Similar to format at https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm
+// Import will populate a database with common passwords.
+//
+// You must supply a Tokenizer (see tokenizer package for default tokenizers)
+// that will deliver the passwords,
+// a DbWriter, where the passwords will be sent,
+// and finally a Sanitizer to clean up the passwords -
+// - if you send nil DefaultSanitizer will be used.
 func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
 
 	bulk, ok := out.(BulkWriter)
@@ -133,7 +144,7 @@ func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
 	return nil
 }
 
-// Check a password.
+// Check a password against the database.
 // It will return an error if:
 //  - Sanitazition fails.
 //  - DB lookup returns an error
@@ -156,18 +167,6 @@ func Check(password string, db DB, san Sanitizer) error {
 		return ErrPasswordInDB
 	}
 	return nil
-}
-
-func inDB(password string, db DB, san Sanitizer) (bool, error) {
-	if san == nil {
-		san = DefaultSanitizer
-	}
-	p, err := san.Sanitize(password)
-	if err != nil {
-		return false, nil
-	}
-	p = strings.ToLower(p)
-	return db.Has(p)
 }
 
 // Check if a password passes a sanitizer.
