@@ -169,7 +169,20 @@ func Check(password string, db DB, san Sanitizer) error {
 	return nil
 }
 
-// Check if a password passes a sanitizer.
+// Sanitize will sanitize a password, useful before hashing
+// and storing it.
+//
+// If the sanitizer is nil, DefaultSanitizer will be used.
+func Sanitize(password string, san Sanitizer) (string, error) {
+	if san == nil {
+		san = DefaultSanitizer
+	}
+	p, err := san.Sanitize(password)
+	return p, err
+}
+
+// SanitizeOK can be used to check if a password passes the sanitizer.
+//
 // If the sanitizer is nil, DefaultSanitizer will be used.
 func SanitizeOK(password string, san Sanitizer) error {
 	if san == nil {
