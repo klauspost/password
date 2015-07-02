@@ -3,7 +3,7 @@
 
 [1]: https://godoc.org/github.com/klauspost/password?status.svg
 [2]: https://godoc.org/github.com/klauspost/password
-[3]: https://travis-ci.org/klauspost/password.svg
+[3]: https://travis-ci.org/klauspost/password.svg?branch=master
 [4]: https://travis-ci.org/klauspost/password
 
 Password Validation for Go
