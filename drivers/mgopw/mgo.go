@@ -26,7 +26,7 @@ func (m Mongo) Add(s string) error {
 }
 
 func (m Mongo) Has(s string) (bool, error) {
-	n, err := m.session.DB(m.db).C(m.collection).Find(bson.M{"_id": s}).Count()
+	n, err := m.session.DB(m.db).C(m.collection).FindId(s).Count()
 	if err != nil {
 		return false, err
 	}
