@@ -2,6 +2,7 @@ package mgopw
 
 import (
 	"testing"
+	"time"
 
 	"github.com/klauspost/password/drivers"
 	"gopkg.in/mgo.v2"
@@ -9,7 +10,7 @@ import (
 
 // Test a Mongo database
 func TestMongo(t *testing.T) {
-	session, err := mgo.Dial("127.0.0.1:27017")
+	session, err := mgo.DialWithTimeout("127.0.0.1:27017", time.Second)
 	if err != nil {
 		t.Skip("No database: ", err)
 	}
