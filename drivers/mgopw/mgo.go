@@ -21,7 +21,7 @@ func New(session *mgo.Session, db, collection string) *Mongo {
 }
 
 func (m Mongo) Add(s string) error {
-	_, err := m.session.DB(m.db).C(m.collection).UpsertId(s, bson.M{})
+	_, err := m.session.DB(m.db).C(m.collection).UpsertId(s, bson.M{"_id": s})
 	return err
 }
 
