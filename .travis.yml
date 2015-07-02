@@ -8,10 +8,14 @@ go:
 services:
   - mongodb
 
+before_script:
+  - mysql -e 'create database testdb;'
+
 script: 
  - go test -v -cpu=1,2,4 .
  - go test -v -cpu=1,2,4 -race .
+ - go test -v -cpu=2 ./drivers/testdb
  - go test -v -cpu=2 ./drivers/boltpw
  - go test -v -cpu=2 ./drivers/mgopw
- - go test -v -cpu=2 ./drivers/testdb
+ - go test -v -cpu=2 ./drivers/sqlpw
  - diff <(gofmt -d .) <("")
