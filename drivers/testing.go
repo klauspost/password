@@ -14,8 +14,24 @@ type TestDB interface {
 	password.DB
 }
 
-// TestDriver will test a driver.
+// TestDriver will test a driver by
+// running TestImport followed by TestData
 func TestDriver(db TestDB) error {
+	err := TestImport(db)
+	if err != nil {
+		return err
+	}
+	err = TestData(db)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+var single_val = "j984lop!#\"{}"
+
+// Runs the import part of the tests.
+func TestImport(db password.DbWriter) error {
 	buf, err := testdata.Asset("testdata.txt.gz")
 	if err != nil {
 		return err
@@ -32,6 +48,15 @@ func TestDriver(db TestDB) error {
 	if err != nil {
 		return err
 	}
+	// Test Add once separately
+	err = writer.Add(single_val)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func TestData(db password.DB) error {
 	for p := range testdata.TestSet {
 		if password.SanitizeOK(p, nil) != nil {
 			continue
@@ -55,22 +80,17 @@ func TestDriver(db TestDB) error {
 			return err
 		}
 	}
-	// Test Add once separately
-	val := "j984lop!#\"{}"
-	err = writer.Add(val)
-	if err != nil {
-		return err
-	}
-	has, err := db.Has(val)
+
+	has, err := db.Has(single_val)
 	if !has {
-		return fmt.Errorf("%s not found in database. (single insert)", val)
+		return fmt.Errorf("%s not found in database. (single insert)", single_val)
 	}
 	if err != nil {
 		return err
 	}
-	has, err = db.Has(val + "*")
+	has, err = db.Has(single_val + "*")
 	if has {
-		return fmt.Errorf("%s* WAS found in database, it shouldn't. (single insert)", val)
+		return fmt.Errorf("%s* WAS found in database, it shouldn't. (single insert)", single_val)
 	}
 	if err != nil {
 		return err
