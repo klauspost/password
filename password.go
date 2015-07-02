@@ -89,22 +89,29 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 // a DbWriter, where the passwords will be sent,
 // and finally a Sanitizer to clean up the passwords -
 // - if you send nil DefaultSanitizer will be used.
-func Import(in Tokenizer, out DbWriter, san Sanitizer) error {
-
+func Import(in Tokenizer, out DbWriter, san Sanitizer) (err error) {
 	bulk, ok := out.(BulkWriter)
 	if ok {
 		closer, ok := out.(io.Closer)
 		if ok {
-			// TODO: Check error
-			defer closer.Close()
+			defer func() {
+				e := closer.Close()
+				if e != nil && err == nil {
+					err = e
+				}
+			}()
 		}
 		out = bulkWrap(bulk)
 	}
 
 	closer, ok := out.(io.Closer)
 	if ok {
-		// TODO: Check error
-		defer closer.Close()
+		defer func() {
+			e := closer.Close()
+			if e != nil && err == nil {
+				err = e
+			}
+		}()
 	}
 
 	if san == nil {
