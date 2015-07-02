@@ -7,10 +7,6 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-type MongoPassword struct {
-	PW string `bson:"_id"`
-}
-
 // Test a Mongo database
 func TestMongo(t *testing.T) {
 	session, err := mgo.Dial("127.0.0.1:27017")
@@ -25,18 +21,12 @@ func TestMongo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Be sure data is flushed
+
+	// Be sure data is flushed, probably not needed, but we like to be sure
 	err = session.Fsync(false)
 	if err != nil {
 		t.Log("Fsync returned", err, "(ignoring)")
 	}
-
-	var all []MongoPassword
-	err = session.DB("testdb").C("password-test").Find(nil).All(&all)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("All:%v\n", all)
 
 	err = drivers.TestData(db)
 	if err != nil {
