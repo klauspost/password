@@ -10,6 +10,7 @@ services:
 
 before_script:
   - mysql -e 'create database testdb;'
+  - psql -c 'create database testdb;' -U postgres
 
 script: 
  - go test -v -cpu=1,2,4 .
