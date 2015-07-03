@@ -10,7 +10,9 @@
 // is created already.
 //
 // See "mysql_test.go" and "postgres_test.go" for examples on
-// how to create those
+// how to create those.
+//
+// Note that passwords are truncated at 128 runes (not bytes).
 package sqlpw
 
 import (
@@ -50,7 +52,7 @@ func (m *Sql) Add(s string) error {
 			return err
 		}
 	}
-	_, err = m.iStmt.Exec(s)
+	_, err = m.iStmt.Exec(truncate(s))
 	return err
 }
 
@@ -64,9 +66,17 @@ func (m *Sql) Has(s string) (bool, error) {
 		}
 	}
 	var num int
-	err = m.qStmt.QueryRow(s).Scan(&num)
+	err = m.qStmt.QueryRow(truncate(s)).Scan(&num)
 	if err != nil {
 		return false, err
 	}
 	return num > 0, nil
+}
+
+func truncate(s string) string {
+	r := []rune(s)
+	if len(r) <= 128 {
+		return s
+	}
+	return string(r[:128])
 }
