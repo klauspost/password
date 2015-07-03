@@ -41,7 +41,9 @@ func TestDriver(db TestDB) error {
 
 var single_val = "j984lop!#\"{}"
 
-// Runs the import part of the tests.
+// TestImport will import about 1500 entries into your
+// database. It will test "Add" and "AddMultiple" (if available).
+// If any error is returned the test failed.
 func TestImport(db password.DbWriter) error {
 	buf, err := testdata.Asset("testdata.txt.gz")
 	if err != nil {
@@ -72,6 +74,10 @@ func TestImport(db password.DbWriter) error {
 	return nil
 }
 
+// TestData will test that the data imported with TestImport
+// is correctly returned.
+// It will test "Has" function of the driver.
+// If any error is returned the test failed.
 func TestData(db password.DB) error {
 	for p := range testdata.TestSet {
 		if password.SanitizeOK(p, nil) != nil {
