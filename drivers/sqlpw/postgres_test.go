@@ -3,7 +3,6 @@ package sqlpw
 import (
 	"database/sql"
 	"flag"
-	"os"
 	"testing"
 
 	"github.com/klauspost/password/drivers"
@@ -12,9 +11,8 @@ import (
 
 var postGresPwd = flag.String("pgpass", "", "Postgres password")
 
-func TestMain(m *testing.M) {
+func init() {
 	flag.Parse()
-	os.Exit(m.Run())
 }
 
 // Test a Postgres database
