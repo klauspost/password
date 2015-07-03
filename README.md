@@ -8,7 +8,7 @@
 
 Dictionary Password Validation for Go.
 
-Motivated by [Password Requirements Done Better](http://blog.klauspost.com/password-requirements-done-better/) (or why password requirements help hackers).
+Motivated by [Password Requirements Done Better](http://blog.klauspost.com/password-requirements-done-better/) - or *why password requirements help hackers*
 
 This library will help you import a password dictionary and will allow you to validate new/changed passwords against the dictionary.
 
@@ -110,4 +110,8 @@ func PreparePassword(db password.DB, toCheck string)  (string, error) {
 	return bcrypt.GenerateFromPassword([]byte(toStore), 12)
 }
 ```	
+
+# license
+
+This code is published under an MIT license. See LICENSE file for more information.
 
