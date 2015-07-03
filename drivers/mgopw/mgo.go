@@ -1,6 +1,8 @@
-// Driver for MongoDB.
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
+// Driver for MongoDB
 //
-// Tested on Mongo v3.0.4 and 2.6.x.
+// Tested on Mongo v3.0.4 and 2.6.x
 //
 // Supply a session and the database and collection name
 // you would like to use.

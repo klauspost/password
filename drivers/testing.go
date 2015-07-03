@@ -1,3 +1,14 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
+// Provides a standard test library for drivers.
+//
+// You can use the functions of this package to test
+// your own driver implementations.
+//
+// If your driver provides both read and write functionality
+// and no inbetween synchronization you can use the TestDriver
+// function, otherwise read and write is split into TestImport
+// and TestData
 package drivers
 
 import (

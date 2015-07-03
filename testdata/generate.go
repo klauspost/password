@@ -1,3 +1,5 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
 // Test data to use for testing.
 //
 // Requires https://github.com/jteeuwen/go-bindata

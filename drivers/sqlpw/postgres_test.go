@@ -1,3 +1,5 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
 package sqlpw
 
 import (
@@ -63,7 +65,7 @@ func TestPostgres(t *testing.T) {
 }
 
 // Example of using a Postgres database
-func ExampleNew_Postgres() {
+func ExampleNew_postgres() {
 	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		panic("Postgres connect error " + err.Error())

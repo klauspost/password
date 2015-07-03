@@ -1,3 +1,6 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
+// Driver for BoltDB
 package boltpw
 
 import (
@@ -9,6 +12,8 @@ type BoltDB struct {
 	Bucket []byte
 }
 
+// New will return a new Database interface that read/writes
+// items to a single bucket.
 func New(db *bolt.DB, bucket string) (*BoltDB, error) {
 	b := &BoltDB{DB: db, Bucket: []byte(bucket)}
 
@@ -28,6 +33,7 @@ func New(db *bolt.DB, bucket string) (*BoltDB, error) {
 
 }
 
+// Has satisfies the password.DB interface
 func (b BoltDB) Has(s string) (bool, error) {
 	var res bool
 	err := b.DB.View(func(tx *bolt.Tx) error {
@@ -38,6 +44,8 @@ func (b BoltDB) Has(s string) (bool, error) {
 	return res, err
 }
 
+// Has satisfies the password.DbWriter interface.
+// It writes a single password to the database
 func (b BoltDB) Add(s string) error {
 	return b.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(b.Bucket)
@@ -46,6 +54,8 @@ func (b BoltDB) Add(s string) error {
 	})
 }
 
+// AddMultiple satisfies the password.BulkWriter interface.
+// It writes a number of passwords to the database
 func (b BoltDB) AddMultiple(s []string) error {
 	return b.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(b.Bucket)

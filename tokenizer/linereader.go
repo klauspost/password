@@ -1,3 +1,5 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
 // Tokenizers for various formats,
 // that satisfies the password.Tokenizer interface.
 package tokenizer

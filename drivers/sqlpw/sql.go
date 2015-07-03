@@ -1,3 +1,16 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
+// Wrapper for an SQL database backend
+//
+// This can be used to use an existing database for input
+// output.
+//
+// Without modifying the default queries
+// the library assumes a table with a unique column "Pass"
+// is created already.
+//
+// See "mysql_test.go" and "postgres_test.go" for examples on
+// how to create those
 package sqlpw
 
 import (
@@ -5,6 +18,8 @@ import (
 )
 
 // Sql can be used for adding and checking passwords.
+// Insert and Query are generated for MySQL, and should very likely
+// be changed for other databases. See the "postgres_test" for an example.
 type Sql struct {
 	db     *sql.DB
 	Table  string

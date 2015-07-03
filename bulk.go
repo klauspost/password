@@ -1,3 +1,5 @@
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
 package password
 
 import ()

@@ -1,6 +1,18 @@
-// Intelligent Password Checking for Go
+// Copyright 2015, Klaus Post, see LICENSE for details.
+
+// Dictionary Password Validation for Go
 //
-// Package home: https://github.com/klauspost/password
+// For usage and examples see: https://github.com/klauspost/password
+// (or open the README.md)
+//
+// This library will help you import a password dictionary and will allow you
+// to validate new/changed passwords against the dictionary.
+//
+// You are able to use your own database and password dictionary.
+// Currently the package supports importing dictionaries similar to
+// CrackStation's Password Cracking Dictionary: https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm
+//
+// It and has "drivers" for various backends, see the "drivers"  directory.
 package password
 
 import (
