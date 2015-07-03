@@ -2,21 +2,28 @@ package sqlpw
 
 import (
 	"database/sql"
+	"flag"
 	"testing"
 
 	"github.com/klauspost/password/drivers"
 	_ "github.com/lib/pq"
 )
 
+var postGresPwd = flag.String("pgpass", "", "Postgres password")
+
+func TestMain(t *testing.T) {
+	flag.Parse()
+}
+
 // Test a Postgres database
 func TestPostgres(t *testing.T) {
-	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable")
+	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable password="+*postGresPwd)
 	if err != nil {
 		t.Skip("Postgres connect error ", err)
 	}
 	table := "testschema.pwtesttable"
 	drop := `DROP TABLE ` + table + `;`
-	schema := `CREATE SCHEMA IF NOT EXISTS testschema AUTHORIZATION postgres`
+	schema := `CREATE SCHEMA testschema AUTHORIZATION postgres`
 	create := `CREATE TABLE ` + table + ` ("pass" VARCHAR(128) PRIMARY KEY);`
 	ignore_rule := `
 		CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
@@ -30,7 +37,7 @@ func TestPostgres(t *testing.T) {
 	_, _ = db.Exec(drop)
 	_, err = db.Exec(schema)
 	if err != nil {
-		t.Fatal(err)
+		t.Log("warning:", err)
 	}
 	_, err = db.Exec(create)
 	if err != nil {
