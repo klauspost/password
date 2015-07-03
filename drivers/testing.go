@@ -53,6 +53,11 @@ func TestImport(db password.DbWriter) error {
 	if err != nil {
 		return err
 	}
+	// .. and test that it is ok to write it again.
+	err = writer.Add(single_val)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
