@@ -5,14 +5,12 @@
 // This can be used to use an existing database for input
 // output.
 //
-// Without modifying the default queries
-// the library assumes a table with a unique column "Pass"
-// is created already.
+// There is constructors for
 //
 // See "mysql_test.go" and "postgres_test.go" for examples on
 // how to create those.
 //
-// Note that passwords are truncated at 128 runes (not bytes).
+// Note that passwords are truncated at 64 runes (not bytes).
 package sqlpw
 
 import (
@@ -25,20 +23,42 @@ import (
 type Sql struct {
 	db     *sql.DB
 	Table  string
-	Query  string // Query string, used to get a count of hits, it defaults to "SELECT COUNT(*) FROM `" + table + "` WHERE `Pass`=?;"
-	Insert string // Insert string,used to insert an item, defaults to "INSERT IGNORE INTO `" + table + "` (`Pass`) VALUE (?);"
+	Query  string // Query string, used to get a count of hits
+	Insert string // Insert string,used to insert an item
 	qStmt  *sql.Stmt
 	iStmt  *sql.Stmt
 }
 
 // New returns a new database.
 //
-func New(db *sql.DB, table string) *Sql {
+func New(db *sql.DB, table, query, insert string) *Sql {
 	s := Sql{
 		db:     db,
 		Table:  table,
-		Query:  "SELECT COUNT(*) FROM `" + table + "` WHERE `Pass`=?;",
-		Insert: "INSERT IGNORE INTO `" + table + "` (`Pass`) VALUE (?);",
+		Query:  query,
+		Insert: insert,
+	}
+	return &s
+}
+
+// NewMysql returns a new database wrapper, set up for MySQL.
+//
+func NewMysql(db *sql.DB, table, column string) *Sql {
+	s := Sql{
+		db:     db,
+		Table:  table,
+		Query:  "SELECT COUNT(*) FROM `" + table + "` WHERE `" + column + "`=?;",
+		Insert: "INSERT IGNORE INTO `" + table + "` (`" + column + "`) VALUE (?);",
+	}
+	return &s
+}
+
+func NewPostgresql(db *sql.DB, table, column string) *Sql {
+	s := Sql{
+		db:     db,
+		Table:  table,
+		Query:  `INSERT INTO ` + table + ` (` + column + `) VALUES ($1)`,
+		Insert: `SELECT COUNT(*) FROM  ` + table + ` WHERE ` + column + `=$1`,
 	}
 	return &s
 }
@@ -75,8 +95,8 @@ func (m *Sql) Has(s string) (bool, error) {
 
 func truncate(s string) string {
 	r := []rune(s)
-	if len(r) <= 128 {
+	if len(r) <= 64 {
 		return s
 	}
-	return string(r[:128])
+	return string(r[:64])
 }
