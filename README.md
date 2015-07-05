@@ -20,6 +20,14 @@ As always, the package is installed with `go get github.com/klauspost/password`.
 
 # usage
 
+With this library you can
+
+1) Import a password dictionary into your database
+2) Check new passords against the dictionary
+2) Sanitize passwords before checking
+
+All of the 3 functionality parts can be used or replaced as it suits your application. In particult you probably do not want to import dictionaries on your webserver, so you can separate that functionality into a separate command.
+
 ## setting up a database
 
 
