@@ -19,12 +19,17 @@ import (
 	"errors"
 	"io"
 	"log"
+	"os"
 	"strings"
 	"time"
 	"unicode/utf8"
 
 	"golang.org/x/text/unicode/norm"
 )
+
+// Logger used for output during Import.
+// This can be exchanged with your own.
+var Logger = log.New(os.Stdout, "", log.LstdFlags)
 
 // A DbWriter is used for adding passwords to a database.
 // Items sent to Add has always been sanitized, however
@@ -154,12 +159,12 @@ func Import(in Tokenizer, out DbWriter, san Sanitizer) (err error) {
 		i++
 		if i%10000 == 0 {
 			elapsed := time.Since(start)
-			log.Printf("Read %d, (%0.0f per sec). Added: %d (%d%%)\n", i, float64(i)/elapsed.Seconds(), added, (added*100)/i)
+			Logger.Printf("Read %d, (%0.0f per sec). Added: %d (%d%%)\n", i, float64(i)/elapsed.Seconds(), added, (added*100)/i)
 		}
 	}
 	elapsed := time.Since(start)
-	log.Printf("Processing took %s, processing %d entries.\n", elapsed, i)
-	log.Printf("%0.2f entries/sec.", float64(i)/elapsed.Seconds())
+	Logger.Printf("Processing took %s, processing %d entries.\n", elapsed, i)
+	Logger.Printf("%0.2f entries/sec.", float64(i)/elapsed.Seconds())
 	return nil
 }
 
