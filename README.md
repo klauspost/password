@@ -22,9 +22,9 @@ As always, the package is installed with `go get github.com/klauspost/password`.
 
 With this library you can
 
-1) Import a password dictionary into your database
-2) Check new passords against the dictionary
-2) Sanitize passwords before checking
+1. Import a password dictionary into your database
+2. Check new passords against the dictionary
+3. Sanitize passwords before authenticating a user
 
 All of the 3 functionality parts can be used or replaced as it suits your application. In particult you probably do not want to import dictionaries on your webserver, so you can separate that functionality into a separate command.
 
@@ -97,27 +97,31 @@ func Import() {
 ```
 ## checking a password
 
-This is an example of checking and preparing a password to be stored in the database.
+This is an example of checking and preparing a password to be stored in the database. Passwords allowed to be full UTF8, and are compared case insensitively.
 ```Go
 func PreparePassword(db password.DB, toCheck string)  (string, error) {
 	err := password.Check(db, toCheck, nil)
 	if err != nil {
-	  // Password failed sanitazion or was in database.
-	  return "", err
+		// Password failed sanitazion or was in database.
+		return "", err
 	}
 	
 	// We use the default sanitizer to sanitize/normalize the password
 	toStore, _ := password.Sanitize(toCheck, nil)
 	if err != nil {
-	  // Shouldn't happen, since we already passed sanitaztion in the check once
-	  // File a bug if it does.
-	  panic(err)
+		// Shouldn't happen, since we already passed sanitaztion in the check once
+		// File a bug if it does.
+		panic(err)
 	}
 
-  // bcrypt the result and return it
+	// bcrypt the result and return it
 	return bcrypt.GenerateFromPassword([]byte(toStore), 12)
 }
 ```	
+
+# compatibility
+
+Unless security related issues should show up, the interfaces and functions should not change in this package. If it is impossible to remain compatible, it will always be shown by a compiler error. So if the library compiles after an update it will remain compatible.
 
 # license
 
