@@ -91,6 +91,38 @@ func (m *Sql) Add(s string) error {
 	return err
 }
 
+// Add multiple entries to the password database
+func (m *Sql) AddMultiple(s []string) error {
+	var err error
+	if !m.TxBulk {
+		for _, pass := range s {
+			err = m.Add(pass)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	tx, err := m.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(m.insert)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, pass := range s {
+		_, err = stmt.Exec(truncate(pass))
+		if err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
 // Has will return true if the database has the entry.
 func (m *Sql) Has(s string) (bool, error) {
 	var err error
