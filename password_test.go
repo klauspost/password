@@ -255,3 +255,30 @@ func ExampleSanitizer() {
 	// password cannot be the same as user name
 	// <nil>
 }
+
+func ExampleImport() {
+	r, err := os.Open("./testdata/testdata.txt.gz")
+	if err != nil {
+		panic("cannot open file")
+	}
+	// Create a database to write to
+	mem := testdb.NewMemDBBulk()
+
+	// The input is gzipped text file with
+	// one input per line, so we choose a tokenizer
+	// that matches.
+	in, err := tokenizer.NewGzLine(r)
+	if err != nil {
+		panic(err)
+	}
+	// Import using the default sanitizer
+	err = Import(in, mem, nil)
+	if err != nil {
+		panic(err)
+	}
+	// Data is now imported, let's do a check
+	// Check a password that is in the sample data
+	err = Check("tl1992rell", mem, nil)
+	fmt.Println(err)
+	// Output:password found in database
+}
