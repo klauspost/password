@@ -87,7 +87,7 @@ func TestPostgres(t *testing.T) {
 //        	WHERE ` + table + `.` + column + ` = NEW.` + column + `
 //    	)
 //  ) DO INSTEAD NOTHING;`
-func ExampleNew_postgres() {
+func ExampleNewPostgresql() {
 	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		panic("Postgres connect error " + err.Error())
