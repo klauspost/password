@@ -69,7 +69,8 @@ type Tokenizer interface {
 // DefaultSanitizer performs the following sanitazion:
 //
 //  - Trim space, tab and newlines from start+end of input
-//  - Check that there is at least 8 runes (returns ErrSanitizeTooShort if not).
+//  - Check that there is at least 8 runes. Return ErrSanitizeTooShort if not.
+//  - Check that the input is valid utf8. Return ErrInvalidString if not.
 //  - Normalize input using Unicode Normalization Form KD
 //
 // If input is less than 8 runes ErrSanitizeTooShort is returned.
@@ -83,6 +84,10 @@ func init() {
 // if the input password is less than 8 runes.
 var ErrSanitizeTooShort = errors.New("password too short")
 
+// ErrInvalidString is returned by the default sanitizer
+// if the string contains an invalid utf8 character sequence.
+var ErrInvalidString = errors.New("invalid utf8 sequence")
+
 // ErrPasswordInDB is returedn by Check, if the password is in the
 // database.
 var ErrPasswordInDB = errors.New("password found in database")
@@ -95,6 +100,9 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 	in = strings.TrimSpace(in)
 	if utf8.RuneCountInString(in) < 8 {
 		return "", ErrSanitizeTooShort
+	}
+	if !utf8.ValidString(in) {
+		return "", ErrInvalidString
 	}
 	in = norm.NFKD.String(in)
 	return in, nil
