@@ -5,12 +5,15 @@
 // This can be used to use an existing database for input
 // output.
 //
-// There is constructors for
+// There are constructors for MySQL and PostgreSQL, as well
+// as a generic constructor that allow you to specify your
+// own queries.
 //
 // See "mysql_test.go" and "postgres_test.go" for examples on
 // how to create those.
 //
-// Note that passwords are truncated at 64 runes (not bytes).
+// Note that passwords are truncated at 64 runes (not bytes),
+// so your schema/table column must support that.
 package sqlpw
 
 import (
