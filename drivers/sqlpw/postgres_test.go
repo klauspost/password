@@ -73,6 +73,9 @@ func TestPostgres(t *testing.T) {
 // Uses 'pwtesttable' in the 'testschema' schema,
 // and reads/adds to the "pass" column.
 //
+// Table can be created like this:
+//  `CREATE TABLE ` + table + ` ("`+ column +`" VARCHAR(64) PRIMARY KEY);`
+//
 // For Postgres to ignore duplicate inserts, you can use a rule
 // like this:
 //
