@@ -70,10 +70,10 @@ func NewMysql(db *sql.DB, schema, column string) *Sql {
 // as well as the column the passwords should be inserted into.
 func NewPostgresql(db *sql.DB, table, column string) *Sql {
 	s := Sql{
-		TxBulk: false,
+		TxBulk: true,
 		db:     db,
-		query:  `INSERT INTO ` + table + ` (` + column + `) VALUES ($1)`,
-		insert: `SELECT COUNT(*) FROM  ` + table + ` WHERE ` + column + `=$1`,
+		insert: `INSERT INTO ` + table + ` (` + column + `) VALUES ($1)`,
+		query:  `SELECT COUNT(*) FROM  ` + table + ` WHERE ` + column + `=$1`,
 	}
 	return &s
 }

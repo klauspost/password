@@ -18,6 +18,7 @@ func init() {
 }
 
 // Test a Postgres database
+// To run locally, use the "-pgpass" password to set the postgres user password.
 func TestPostgres(t *testing.T) {
 	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable password="+*postGresPwd)
 	if err != nil {
