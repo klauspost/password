@@ -34,13 +34,13 @@ func TestPostgres(t *testing.T) {
 	schema := `CREATE SCHEMA testschema AUTHORIZATION postgres`
 	create := `CREATE TABLE ` + table + ` ("pass" VARCHAR(64) PRIMARY KEY);`
 	ignore_rule := `
-		CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
-    		ON INSERT TO ` + table + `
-    		WHERE (EXISTS ( 
-        		SELECT 1
-        		FROM ` + table + `
-        		WHERE ` + table + `.pass = NEW.pass
-    		) ) DO INSTEAD NOTHING;`
+        CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
+            ON INSERT TO ` + table + `
+            WHERE (EXISTS ( 
+                SELECT 1
+                FROM ` + table + `
+                WHERE ` + table + `.pass = NEW.pass
+            ) ) DO INSTEAD NOTHING;`
 
 	_, _ = db.Exec(drop)
 	_, err = db.Exec(schema)
@@ -79,13 +79,13 @@ func TestPostgres(t *testing.T) {
 // For Postgres to ignore duplicate inserts, you can use a rule
 // like this:
 //
-// 	`CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
-//    	ON INSERT TO ` + table + `
-//    	WHERE (EXISTS (
-//        	SELECT 1
-//        	FROM ` + table + `
-//        	WHERE ` + table + `.` + column + ` = NEW.` + column + `
-//    	)
+//  `CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
+//      ON INSERT TO ` + table + `
+//      WHERE (EXISTS (
+//          SELECT 1
+//          FROM ` + table + `
+//          WHERE ` + table + `.` + column + ` = NEW.` + column + `
+//      )
 //  ) DO INSTEAD NOTHING;`
 func ExampleNewPostgresql() {
 	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable")
