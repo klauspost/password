@@ -1410,6 +1410,8 @@ var TestSet = map[string]bool{
 	"!!0413LiB.":                          true,
 	"!!0413lib.":                          true,
 	"!!0472557017!!":                      true,
+	"ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字ExcessivelyLongPasdwordContainingUTF8你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字": true,
+	"Containg62ForSQL你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什么名字你叫什": true,
 }
 
 var NotInSet = map[string]bool{
