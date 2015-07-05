@@ -12,7 +12,8 @@
 // Currently the package supports importing dictionaries similar to
 // CrackStation's Password Cracking Dictionary: https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm
 //
-// It and has "drivers" for various backends, see the "drivers"  directory.
+// It and has "drivers" for various backends, see the "drivers"  directory, where there are
+// implementations and a test framework that will help you test your own drivers.
 package password
 
 import (
