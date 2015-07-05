@@ -21,44 +21,59 @@ import (
 // Insert and Query are generated for MySQL, and should very likely
 // be changed for other databases. See the "postgres_test" for an example.
 type Sql struct {
+	TxBulk bool // Do bulk inserts with a transaction.
 	db     *sql.DB
-	Table  string
-	Query  string // Query string, used to get a count of hits
-	Insert string // Insert string,used to insert an item
+	query  string // Query string, used to get a count of hits
+	insert string // Insert string,used to insert an item
 	qStmt  *sql.Stmt
 	iStmt  *sql.Stmt
 }
 
 // New returns a new database.
 //
-func New(db *sql.DB, table, query, insert string) *Sql {
+// You must give an query, that returns the number of
+// rows matching the parameter given.
+//
+// You must give an insert statement that will insert
+// the password given. It must be able to insert the
+// same password multiple times without returning an error.
+//
+// You should manually enable bulk transactions
+// modifying the TxBulk variable on the returned object
+// if your database/driver supports it.
+func New(db *sql.DB, query, insert string) *Sql {
 	s := Sql{
 		db:     db,
-		Table:  table,
-		Query:  query,
-		Insert: insert,
+		query:  query,
+		insert: insert,
 	}
 	return &s
 }
 
 // NewMysql returns a new database wrapper, set up for MySQL.
 //
-func NewMysql(db *sql.DB, table, column string) *Sql {
+// You must supply a schema (that should already exist),
+// as well as the column the passwords should be inserted into.
+func NewMysql(db *sql.DB, schema, column string) *Sql {
 	s := Sql{
+		TxBulk: true,
 		db:     db,
-		Table:  table,
-		Query:  "SELECT COUNT(*) FROM `" + table + "` WHERE `" + column + "`=?;",
-		Insert: "INSERT IGNORE INTO `" + table + "` (`" + column + "`) VALUE (?);",
+		query:  "SELECT COUNT(*) FROM `" + schema + "` WHERE `" + column + "`=?;",
+		insert: "INSERT IGNORE INTO `" + schema + "` (`" + column + "`) VALUE (?);",
 	}
 	return &s
 }
 
+// NewPostgresql returns a new database wrapper, set up for PostgreSQL.
+//
+// You must supply a "schema.table" (that should already exist),
+// as well as the column the passwords should be inserted into.
 func NewPostgresql(db *sql.DB, table, column string) *Sql {
 	s := Sql{
+		TxBulk: true,
 		db:     db,
-		Table:  table,
-		Query:  `INSERT INTO ` + table + ` (` + column + `) VALUES ($1)`,
-		Insert: `SELECT COUNT(*) FROM  ` + table + ` WHERE ` + column + `=$1`,
+		query:  `INSERT INTO ` + table + ` (` + column + `) VALUES ($1)`,
+		insert: `SELECT COUNT(*) FROM  ` + table + ` WHERE ` + column + `=$1`,
 	}
 	return &s
 }
@@ -67,7 +82,7 @@ func NewPostgresql(db *sql.DB, table, column string) *Sql {
 func (m *Sql) Add(s string) error {
 	var err error
 	if m.iStmt == nil {
-		m.iStmt, err = m.db.Prepare(m.Insert)
+		m.iStmt, err = m.db.Prepare(m.insert)
 		if err != nil {
 			return err
 		}
@@ -80,7 +95,7 @@ func (m *Sql) Add(s string) error {
 func (m *Sql) Has(s string) (bool, error) {
 	var err error
 	if m.qStmt == nil {
-		m.qStmt, err = m.db.Prepare(m.Query)
+		m.qStmt, err = m.db.Prepare(m.query)
 		if err != nil {
 			return false, err
 		}
