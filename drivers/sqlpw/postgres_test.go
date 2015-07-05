@@ -72,6 +72,18 @@ func TestPostgres(t *testing.T) {
 //
 // Uses 'pwtesttable' in the 'testschema' schema,
 // and reads/adds to the "pass" column.
+//
+// For Postgres to ignore duplicate inserts, you can use a rule
+// like this:
+//
+// 	`CREATE OR REPLACE RULE db_table_ignore_duplicate_inserts AS
+//    	ON INSERT TO ` + table + `
+//    	WHERE (EXISTS (
+//        	SELECT 1
+//        	FROM ` + table + `
+//        	WHERE ` + table + `.` + column + ` = NEW.` + column + `
+//    	)
+//  ) DO INSTEAD NOTHING;`
 func ExampleNew_postgres() {
 	db, err := sql.Open("postgres", "user=postgres dbname=postgres sslmode=disable")
 	if err != nil {
