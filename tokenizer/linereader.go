@@ -6,6 +6,7 @@ package tokenizer
 
 import (
 	"bufio"
+	"compress/bzip2"
 	"io"
 
 	gzip "github.com/klauspost/pgzip"
@@ -21,9 +22,9 @@ type LineReader struct {
 // NewLine reads one password per line until
 // \0xa (newline) is encountered.
 // Input is streamed.
-func NewLine(in io.Reader) *LineReader {
-	l := &LineReader{in: in}
-	l.br = bufio.NewReader(in)
+func NewLine(r io.Reader) *LineReader {
+	l := &LineReader{in: r}
+	l.br = bufio.NewReader(r)
 	return l
 }
 
@@ -31,15 +32,27 @@ func NewLine(in io.Reader) *LineReader {
 // \0xa (newline) is encountered.
 // The input is assumed to be gzip compressed.
 // Input is streamed.
-func NewGzLine(in io.Reader) (*LineReader, error) {
-	l := &LineReader{in: in}
+func NewGzLine(r io.Reader) (*LineReader, error) {
+	l := &LineReader{in: r}
 	var err error
-	l.gr, err = gzip.NewReader(in)
+	l.gr, err = gzip.NewReader(r)
 	if err != nil {
 		return nil, err
 	}
 	l.br = bufio.NewReader(l.gr)
 	return l, nil
+}
+
+// NewBz2Line reads one password per line until
+// \0xa (newline) is encountered.
+// The input is assumed to be bzip2 compressed.
+// Input is streamed. If r does not also implement io.ByteReader,
+// the decompressor may read more data than necessary from in.
+func NewBz2Line(r io.Reader) *LineReader {
+	l := &LineReader{in: r}
+	bz := bzip2.NewReader(r)
+	l.br = bufio.NewReader(bz)
+	return l
 }
 
 // Next returns the data on the next line.

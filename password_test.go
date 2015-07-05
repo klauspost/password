@@ -60,6 +60,19 @@ func TestImportBig(t *testing.T) {
 	}
 }
 
+func TestImportBz2(t *testing.T) {
+	r, err := os.Open("rockyou.txt.bz2")
+	if err != nil {
+		t.Skip("Skipping bz2 file test. 'rockyou.txt.bz2' must be in current dir")
+	}
+	mem := testdb.NewMemDBBulk()
+	in := tokenizer.NewBz2Line(r)
+	err = Import(in, mem, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestImportBulk(t *testing.T) {
 	buf, err := testdata.Asset("testdata.txt.gz")
 	if err != nil {
