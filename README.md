@@ -122,16 +122,21 @@ func PreparePassword(db password.DB, toCheck string)  (string, error) {
 ```	
 
 # dictionaries
-### [CrackStation's Password Cracking Dictionary](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Very good start.
-* HTTP download provided by me, use only if you cannot download torrents:
+### CrackStation's Password Cracking Dictionary
+[Link](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Very good start.
+
+Here is a HTTP download provided by me, please use only if you cannot download torrents:
  * [Actual Passwords only](http://5.9.40.76/static/dicts/crackstation-human-only.txt.gz) - 200MB.
  * [Full Dictionary](http://5.9.40.76/static/dicts/crackstation.full.txt.gz) - 3.5GB
   
-### [SkullSecurity Passwords](https://wiki.skullsecurity.org/Passwords)
+### SkullSecurity Passwords
+[Link](https://wiki.skullsecurity.org/Passwords)
 Mostly small and varying quality.
 
-### [g0tmi1k Dictionaries + Wordlists](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
+### g0tmi1k Dictionaries + Wordlists
+[Link](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords.
+
 
 # compatibility
 
