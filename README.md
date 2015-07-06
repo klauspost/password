@@ -123,20 +123,24 @@ func PreparePassword(db password.DB, toCheck string)  (string, error) {
 
 # dictionaries
 ### CrackStation's Password Cracking Dictionary
-[Link](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Very good start.
+[Site Link](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Contains a very good dictionary. Their "Human Passwords Only" is very good at catching common bad passwords, and is a good base dicitonary. Can be opened with `tokenizer.NewGzLine`.
 
-Here is a HTTP download provided by me, please use only if you cannot download torrents:
- * [Actual Passwords only](http://5.9.40.76/static/dicts/crackstation-human-only.txt.gz) - 200MB.
+Here is a HTTP download provided by me, please use only if you cannot download torrents. I have recompressed them for a smaller download size:
+ * [Human Passwords Only](http://5.9.40.76/static/dicts/crackstation-human-only.txt.gz) - 209MB.
  * [Full Dictionary](http://5.9.40.76/static/dicts/crackstation.full.txt.gz) - 3.5GB
-  
+
+License is [CC-by-SA](http://creativecommons.org/licenses/by-sa/3.0/).
+ 
 ### SkullSecurity Passwords
-[Link](https://wiki.skullsecurity.org/Passwords)
-Mostly small and varying quality.
+[Site Link](https://wiki.skullsecurity.org/Passwords).
+Mostly small and varying quality. Can be opened with `tokenizer.NewBz2Line`.
 
 ### g0tmi1k Dictionaries + Wordlists
-[Link](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
-Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords.
+[Site Link](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/).
+Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords. Needs to be uncompressed or recompressed.
 
+### klauspost password checker dictionary
+I am currently working on a password checker dictionary combining the most common dictionaries. I will provide download for these when it is finished.
 
 # compatibility
 
