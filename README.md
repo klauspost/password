@@ -32,17 +32,18 @@ All of the 3 functionality parts can be used or replaced as it suits your applic
 
 ## setting up a database
 
+To use the built-in drivers, see the documentation for them. But here is an example of how to set up a Bolt database:
 
 ```Go
 import(
-  "github.com/boltdb/bolt"
-  "github.com/klauspost/password"
-  "github.com/klauspost/password/drivers/boltpw"
+	"github.com/boltdb/bolt"
+	"github.com/klauspost/password"
+	"github.com/klauspost/password/drivers/boltpw"
 )
 
-  // Open the database using the Bolt driver
-  // You probably have this elsewhere if you already use Bolt
-  db, err := bolt.Open("password.db", 0666, nil)
+	// Open the database using the Bolt driver
+	// You probably have this elsewhere if you already use Bolt
+  	db, err := bolt.Open("password.db", 0666, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +53,7 @@ import(
 So far pretty standard. We open the database as we always would. This is used by the driver in [`github.com/klauspost/password/drivers/boltpw`](https://godoc.org/github.com/klauspost/password/drivers/boltpw) to write and check passwords.
 
 ```Go
-  // Use the driver to create in/out using the bucket "commonpwd"
+	// Use the driver to read/write to the bucket "commonpwd"
 	chk, err := boltpw.New(db, "commonpwd")
 	if err != nil {
 		t.Fatal(err)
@@ -63,8 +64,8 @@ The object we get back can then be used to check passwords, assuming you have im
 ```Go
 	err = password.Check(chk, "SecretPassword", nil)
 	if err != nil {
-	  // Password failed sanitazion or was in database.
-	  panic(err)
+		// Password failed sanitazion or was in database.
+		panic(err)
 	}
 ```	
 
