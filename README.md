@@ -8,6 +8,8 @@
 
 Dictionary Password Validation for Go.
 
+Protect your bcrypt/scrypt/PBKDF encrypted passwords against dictionary attacks.
+
 Motivated by [Password Requirements Done Better](http://blog.klauspost.com/password-requirements-done-better/) - or *why password requirements help hackers*
 
 This library will help you import a password dictionary and will allow you to validate new/changed passwords against the dictionary.
@@ -118,6 +120,11 @@ func PreparePassword(db password.DB, toCheck string)  (string, error) {
 	return bcrypt.GenerateFromPassword([]byte(toStore), 12)
 }
 ```	
+
+# dictionaries
+* [CrackStation's Password Cracking Dictionary](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Very good start.
+* [SkullSecurity Passwords](https://wiki.skullsecurity.org/Passwords). Mostly small and varying quality.
+* [g0tmi1k Dictionaries + Wordlists](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/). Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords.
 
 # compatibility
 
