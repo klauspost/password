@@ -121,25 +121,36 @@ func PreparePassword(db password.DB, toCheck string)  (string, error) {
 }
 ```	
 
+## sanitizers
+
+You can replace the sanitizer with your own when checking passwords. This can be used to reject passwords that match username, email, you site name and similar information you might have on the user. For an example of that, see the [Sanitizer interface](https://godoc.org/github.com/klauspost/password#example-Sanitizer).
+
+You can use different sanitizers for importing a dictionaries and checking individual passwords. You should run the sanitizer on all passwords before checking or encrypting them for storage, as proposed in the "checking a password" above.
+
 # dictionaries
-### CrackStation's Password Cracking Dictionary
-[Site Link](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm). Contains a very good dictionary. Their "Human Passwords Only" is very good at catching common bad passwords, and is a good base dicitonary. Can be opened with `tokenizer.NewGzLine`.
+[**CrackStation's Password Cracking Dictionary**](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm)
+
+Contains a very good dictionary. Their "Human Passwords Only" is very good at catching common bad passwords, and is a good base dicitonary. Can be opened with `tokenizer.NewGzLine`.
 
 Here is a HTTP download provided by me, please use only if you cannot download torrents. I have recompressed them for a smaller download size:
  * [Human Passwords Only](http://5.9.40.76/static/dicts/crackstation-human-only.txt.gz) - 209MB.
  * [Full Dictionary](http://5.9.40.76/static/dicts/crackstation.full.txt.gz) - 3.5GB
 
-License is [CC-by-SA](http://creativecommons.org/licenses/by-sa/3.0/).
+License is [CC-by-SA](http://creativecommons.org/licenses/by-sa/3.0/). This license allows you to use the data commercially.
+
  
-### SkullSecurity Passwords
-[Site Link](https://wiki.skullsecurity.org/Passwords).
+[**SkullSecurity Passwords**](https://wiki.skullsecurity.org/Passwords)
+
 Mostly small and varying quality. Can be opened with `tokenizer.NewBz2Line`.
 
-### g0tmi1k Dictionaries + Wordlists
-[Site Link](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/).
+
+[**g0tmi1k Dictionaries + Wordlists**](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/).
+
 Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords. Needs to be uncompressed or recompressed.
 
-### klauspost password checker dictionary
+
+**klauspost password checker dictionary**
+
 I am currently working on a password checker dictionary combining the most common dictionaries. I will provide download for these when it is finished.
 
 # compatibility
