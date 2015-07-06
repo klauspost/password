@@ -19,6 +19,10 @@ func TestMongo(t *testing.T) {
 	coll := session.DB("testdb").C("password-test")
 	_ = coll.DropCollection()
 
+	// Set timeout, otherwise travis sometimes gets timeout.
+	session.SetSocketTimeout(time.Minute)
+	session.SetSyncTimeout(time.Minute)
+
 	db := New(session, "testdb", "password-test")
 	err = drivers.TestImport(db)
 	if err != nil {
