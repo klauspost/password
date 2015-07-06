@@ -105,6 +105,7 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 		return "", ErrInvalidString
 	}
 	in = norm.NFKD.String(in)
+	in = strings.TrimSpace(in)
 	return in, nil
 }
 
