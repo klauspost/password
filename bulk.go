@@ -28,6 +28,12 @@ func bulkWrap(out BulkWriter) DbWriter {
 		in:  make(chan []string, 0),
 		buf: make([]string, 0, BulkMax),
 	}
+	return b
+}
+
+func (b *bulkWrapper) Init() error {
+	b.in = make(chan []string, 0)
+	b.res = make(chan error, 1)
 	go func() {
 		b.res <- nil
 		defer close(b.res)
@@ -45,7 +51,7 @@ func bulkWrap(out BulkWriter) DbWriter {
 			}
 		}
 	}()
-	return b
+	return nil
 }
 
 func (b *bulkWrapper) Add(s string) error {

@@ -108,6 +108,10 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 	return in, nil
 }
 
+type initer interface {
+	Init() error
+}
+
 // Import will populate a database with common passwords.
 //
 // You must supply a Tokenizer (see tokenizer package for default tokenizers)
@@ -118,6 +122,13 @@ func (d defaultSanitizer) Sanitize(in string) (string, error) {
 func Import(in Tokenizer, out DbWriter, san Sanitizer) (err error) {
 	bulk, ok := out.(BulkWriter)
 	if ok {
+		initer, ok := out.(initer)
+		if ok {
+			err := initer.Init()
+			if err != nil {
+				return err
+			}
+		}
 		closer, ok := out.(io.Closer)
 		if ok {
 			defer func() {
@@ -128,6 +139,14 @@ func Import(in Tokenizer, out DbWriter, san Sanitizer) (err error) {
 			}()
 		}
 		out = bulkWrap(bulk)
+	}
+
+	initer, ok := out.(initer)
+	if ok {
+		err := initer.Init()
+		if err != nil {
+			return err
+		}
 	}
 
 	closer, ok := out.(io.Closer)

@@ -87,6 +87,11 @@ func TestImportBulk(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Test everything is kept open.
+	err = Import(in, mem, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestInDB(t *testing.T) {
