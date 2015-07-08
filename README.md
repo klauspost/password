@@ -150,9 +150,13 @@ Mostly small and varying quality. Can be opened with `tokenizer.NewBz2Line`.
 Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords. Needs to be uncompressed or recompressed.
 
 
-**• klauspost password checker dictionary**
+**• klauspost "paranoid passwords" dictionary**
 
-I am currently working on a password checker dictionary combining the most common dictionaries. I will provide download for these when it is finished.
+I have created a dictionary by combining 'Crackstation', 'g0tmi1k' and 'WPA-PSK WORDLIST 3 Final'. The passwords are all in lower-case, unicode KD-normalized, unique and sorted.
+
+[• Download dictionary](http://5.9.40.76/static/dicts/klauspost-paranoid-passwords.gz). 1123 Million entries, 3.85GB gzipped.
+
+Note: This dictionary cannot be used for password retrival. Released as [CC-by-SA](http://creativecommons.org/licenses/by-sa/3.0/).
 
 # compatibility
 
