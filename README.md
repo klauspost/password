@@ -129,7 +129,8 @@ You can replace the sanitizer with your own when checking passwords. This can be
 You can use different sanitizers for importing a dictionaries and checking individual passwords. You should run the sanitizer on all passwords before checking or encrypting them for storage, as proposed in the "checking a password" above.
 
 # dictionaries
-[**• CrackStation's Password Cracking Dictionary**](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm)
+
+•  [**CrackStation's Password Cracking Dictionary**](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm)
 
 Contains a very good dictionary. Their "Human Passwords Only" is very good at catching common bad passwords, and is a good base dicitonary. Can be opened with `tokenizer.NewGzLine`.
 
@@ -140,12 +141,12 @@ Here is a HTTP download provided by me, please use only if you cannot download t
 License is [CC-by-SA](http://creativecommons.org/licenses/by-sa/3.0/). This license allows you to use the data commercially.
 
  
-[**• SkullSecurity Passwords**](https://wiki.skullsecurity.org/Passwords)
+•  [**SkullSecurity Passwords**](https://wiki.skullsecurity.org/Passwords)
 
 Mostly small and varying quality. Can be opened with `tokenizer.NewBz2Line`.
 
 
-[**• g0tmi1k Dictionaries + Wordlists**](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/).
+• [**g0tmi1k Dictionaries + Wordlists**](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/).
 
 Hard to download. `18-in-1` has a lot of `sameword1`; `sameword2`, etc. Mostly ascii passwords. Needs to be uncompressed or recompressed.
 
