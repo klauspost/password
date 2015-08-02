@@ -15,8 +15,9 @@ before_script:
 script: 
  - go test -v -cpu=1,2,4 .
  - go test -v -cpu=1,2,4 -race .
- - go test -v -cpu=2 ./drivers/testdb
- - go test -v -cpu=2 ./drivers/boltpw
- - go test -v -cpu=2 ./drivers/mgopw
- - go test -v -cpu=2 ./drivers/sqlpw
+ - go test -v -cpu=2 -race ./drivers/testdb
+ - go test -v -cpu=2 -race ./drivers/boltpw
+ - go test -v -cpu=2 -race ./drivers/mgopw
+ - go test -v -cpu=2 -race ./drivers/sqlpw
+ - go test -v -cpu=2 -race ./drivers/bloompw
  - diff <(gofmt -d .) <("")
