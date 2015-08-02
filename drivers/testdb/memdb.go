@@ -8,6 +8,8 @@
 //
 // Since it has rather high memory use, it is
 // not recommended to be used in production.
+// For a good in-memory database, see the bloom
+// driver.
 package testdb
 
 // This is the simplest possible database that must be supported.
