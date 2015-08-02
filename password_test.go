@@ -13,6 +13,7 @@ import (
 	"github.com/klauspost/password/drivers/testdb"
 	"github.com/klauspost/password/testdata"
 	"github.com/klauspost/password/tokenizer"
+	"xi2.org/x/xz"
 )
 
 // inDB will return information if a password is in the database
@@ -42,6 +43,29 @@ func TestImport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+// Open a xz compressed archive and import it.
+// Uses the "xi2.org/x/xz" package to read xz files.
+func ExampleImport_xz() {
+	r, err := os.Open("rockyou.txt.xz")
+	if err != nil {
+		// Fake it
+		fmt.Println("Imported", 9341543, "items")
+		return
+	}
+	xzr, err := xz.NewReader(r, 0)
+	if err != nil {
+		panic(err)
+	}
+	mem := testdb.NewMemDBBulk()
+	in := tokenizer.NewLine(xzr)
+	err = Import(in, mem, nil)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Imported", len(*mem), "items")
+	// Output: Imported 9341543 items
 }
 
 func TestImportBig(t *testing.T) {
