@@ -14,7 +14,8 @@ Motivated by [Password Requirements Done Better](http://blog.klauspost.com/passw
 
 This library will help you import a password dictionary and will allow you to validate new/changed passwords against the dictionary.
 
-You are able to use your own database and password dictionary. Currently the package supports importing dictionaries similar to [CrackStation's Password Cracking Dictionary](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm), and has "drivers" for [MongoDB](https://godoc.org/github.com/klauspost/password/drivers/mgopw), [BoltDB](https://godoc.org/github.com/klauspost/password/drivers/boltpw), [MySQL](https://godoc.org/github.com/klauspost/password/drivers/sqlpw) and [PostgreSQL](https://godoc.org/github.com/klauspost/password/drivers/sqlpw).
+You are able to use your own database and password dictionary. Currently the package supports importing dictionaries similar to [CrackStation's Password Cracking Dictionary](https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm), and has "drivers" for [MongoDB](https://godoc.org/github.com/klauspost/password/drivers/mgopw), [BoltDB](https://godoc.org/github.com/klauspost/password/drivers/boltpw), [MySQL](https://godoc.org/github.com/klauspost/password/drivers/sqlpw) and [PostgreSQL](https://godoc.org/github.com/klauspost/password/drivers/sqlpw). For a feasible in-memory database see the  [Bloom filter driver](https://godoc.org/github.com/klauspost/password/drivers/bloompw)
+
 
 # installation
 
