@@ -1,4 +1,8 @@
 // Copyright 2015, Mike Houston, see LICENSE for details.
+
+// A bitset Bloom filter for a reduced memory password representation.
+//
+// See https://github.com/AndreasBriese/bbloom
 package bloompw
 
 import (
