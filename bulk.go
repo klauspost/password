@@ -2,8 +2,6 @@
 
 package password
 
-import ()
-
 // If your DbWriter implements this, input will be sent
 // in batches instead of using Add.
 type BulkWriter interface {
